@@ -1,0 +1,111 @@
+# VisiHealth AI Configuration
+
+# Dataset Configuration
+dataset:
+  name: "SLAKE"
+  root_dir: "./data/SLAKE"
+  images_dir: "./data/SLAKE/imgs"
+  qa_file: "./data/SLAKE/train.json"
+  val_file: "./data/SLAKE/validate.json"
+  test_file: "./data/SLAKE/test.json"
+  kg_file: "./data/SLAKE/knowledge_graph.txt"
+  masks_dir: "./data/SLAKE/masks"
+  language: "en"  # English subset
+  max_qa_pairs: -1  # -1 for all pairs
+
+# Image Configuration
+image:
+  size: 224
+  channels: 3
+  augmentation:
+    rotation_range: 15
+    horizontal_flip: true
+    vertical_flip: false
+    brightness: 0.2
+    contrast: 0.2
+    zoom_range: 0.1
+
+# Model Configuration
+model:
+  # CNN Configuration
+  cnn:
+    architecture: "custom"  # Custom CNN trained from scratch
+    input_size: 224
+    num_classes: 1000  # Adjust based on answer vocabulary
+    dropout: 0.5
+    feature_dim: 512
+    roi_layers: [3, 4]  # Which layers to extract ROI features from
+    
+  # BERT Configuration
+  bert:
+    model_name: "michiyasunaga/BioLinkBERT-base"  # or "emilyalsentzer/Bio_ClinicalBERT"
+    max_length: 128
+    hidden_size: 768
+    dropout: 0.3
+    freeze_layers: 6  # Freeze first 6 layers for efficiency
+    
+  # Fusion Configuration
+  fusion:
+    method: "concat"  # concat, attention, bilinear
+    hidden_dims: [512, 256]
+    dropout: 0.4
+
+# Training Configuration
+training:
+  batch_size: 16  # Reduced for more frequent updates and better gradients
+  num_epochs: 150  # INCREASED to 150 for reaching 70% target
+  learning_rate: 0.0002  # INCREASED to 0.0002 for stronger weight updates
+  weight_decay: 0.00005  # Slightly increased for better generalization
+  optimizer: "adam"
+  scheduler: "reduce_on_plateau"
+  patience: 12  # More patience before reducing LR
+  gradient_clip: 1.0
+  mixed_precision: false  # Disabled to avoid instability
+  
+  # Multi-task Learning
+  multitask:
+    enabled: true
+    segmentation_weight: 0.3
+    vqa_weight: 1.0
+    
+  # Early Stopping
+  early_stopping:
+    enabled: true
+    patience: 25  # INCREASED to 25 - give model more room to improve
+    min_delta: 0.0005  # More sensitive to small improvements
+
+# Knowledge Graph Configuration
+knowledge_graph:
+  index_method: "entity_relation"  # Index by entities and relations
+  retrieval_topk: 3
+  similarity_threshold: 0.5
+  use_embeddings: false  # Set to true for semantic matching
+
+# Rationale Generation
+rationale:
+  template: "Detected {roi}. Knowledge Graph indicates: {kg_fact}. Therefore, the answer is {prediction}."
+  max_length: 256
+  use_confidence: true
+
+# Evaluation
+evaluation:
+  metrics: ["accuracy", "bleu", "exact_match"]
+  save_predictions: true
+  visualize_results: true
+
+# System Configuration
+system:
+  device: "cuda"  # cuda or cpu
+  num_workers: 4
+  seed: 42
+  save_dir: "./checkpoints"
+  log_dir: "./logs"
+  results_dir: "./results"
+
+# Web Application
+webapp:
+  host: "0.0.0.0"
+  port: 5000
+  debug: false
+  upload_folder: "./uploads"
+  max_file_size: 16  # MB

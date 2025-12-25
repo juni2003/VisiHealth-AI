@@ -1,0 +1,7 @@
+{
+  "test_accuracy": 44.20358152686145,
+  "correct": 469,
+  "total": 1061,
+  "checkpoint": "checkpoints/best_checkpoint.pth",
+  "platform": "Kaggle"
+}
