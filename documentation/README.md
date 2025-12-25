@@ -486,8 +486,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-**Developer**:  Juni2003  
-**Email**: [your-email@example.com]  
+**Developer**:  Junaid and Hammad 
+**Email**: [juni.satti@gmail.com]  
 **GitHub**: [@juni2003](https://github.com/juni2003)  
 **Project Link**: [https://github.com/juni2003/VisiHealth-AI](https://github.com/juni2003/VisiHealth-AI)
 
